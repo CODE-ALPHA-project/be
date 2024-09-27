@@ -24,4 +24,4 @@ jobs:
                       cd  /home/ubuntu
                       sudo chown -R $USER:$USER /home/ubuntu
                       git config --global --add safe.directory /home/ubuntu
-                      git clone https://github.com/CODE-ALPHA-project 
+                      git clone https://github.com/CODE-ALPHA-project/be

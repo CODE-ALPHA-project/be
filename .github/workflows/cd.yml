@@ -21,7 +21,7 @@ jobs:
                   script_stop: true
                   script: |
                       sudo su
-                      cd  /root
-                      sudo chown -R $USER:$USER /root
-                      git config --global --add safe.directory /root
+                      cd  /home/ubuntu
+                      sudo chown -R $USER:$USER /home/ubuntu
+                      git config --global --add safe.directory /home/ubuntu
                       git clone https://github.com/CODE-ALPHA-project 

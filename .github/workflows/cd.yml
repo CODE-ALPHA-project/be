@@ -20,7 +20,7 @@ jobs:
                   key: ${{ secrets.EC2_PRIVATE_KEY }}
                   script_stop: true
                   script: |
-                      sudo cd  /root
+                      cd  /root
                       sudo chown -R $USER:$USER /root
                       git config --global --add safe.directory /root
                       git clone https://github.com/CODE-ALPHA-project 

@@ -23,7 +23,8 @@ jobs:
                       sudo chown -R $USER:$USER /home/***/be
                       git config --global --add safe.directory /home/***/be
                       cd /home/***/be
-                      git pull origin main
-                      ./gradlew clean build
-                      cd ..
-                      sudo docker-compose up --build -d
+                      pwd
+                      # git pull origin main
+                      # ./gradlew clean build
+                      # cd ..
+                      # sudo docker-compose up --build -d

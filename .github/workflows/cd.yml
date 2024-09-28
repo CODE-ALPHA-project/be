@@ -20,12 +20,6 @@ jobs:
                   key: ${{ secrets.EC2_PRIVATE_KEY }}
                   script_stop: true
                   script: |
-                      sudo su
-                      cd  /home/ubuntu
-                      sudo chown -R $USER:$USER /home/ubuntu
-                      git config --global --add safe.directory /home/ubuntu
-                      git clone https://github.com/CODE-ALPHA-project/be
-                  script: |
                       sudo chown -R $USER:$USER /home/***/be
                       git config --global --add safe.directory /home/***/be/spring/be
                       cd /home/***/be

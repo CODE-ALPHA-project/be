@@ -21,7 +21,7 @@ jobs:
                   script_stop: true
                   script: |
                       sudo chown -R $USER:$USER /home/***/be
-                      git config --global --add safe.directory /home/***/be/spring/be
+                      git config --global --add safe.directory /home/***/be
                       cd /home/***/be
                       git pull origin main
                       ./gradlew clean build

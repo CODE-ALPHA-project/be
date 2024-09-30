@@ -1,4 +1,4 @@
-package com.codealpha.resoft_be.controller;
+package com.codealpha.resoft_be.api;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

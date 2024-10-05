@@ -22,17 +22,46 @@ configurations {
 repositories {
     mavenCentral()
 }
-
 dependencies {
+    // Spring Data JPA for ORM and database interaction with JPA/Hibernate
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    // Spring Web for building RESTful web services and web applications
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+
+    // Lombok for reducing boilerplate code (e.g., getters, setters, constructors)
     compileOnly 'org.projectlombok:lombok'
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    runtimeOnly 'com.h2database:h2'
     annotationProcessor 'org.projectlombok:lombok'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    // Spring DevTools for hot reloading and development utilities
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+    // H2 in-memory database for testing and local development
+    runtimeOnly 'com.h2database:h2'
+
+
+    // querydsl
+    implementation "com.querydsl:querydsl-jpa:5.0.0:jakarta"
+    annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
+    annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+    annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+
+    // JUnit platform launcher for running tests
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    // Spring Boot Test starter for unit and integration testing
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    // Spring WebFlux for reactive web applications using Project Reactor
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+    // Spring Data MongoDB Reactive for non-blocking, reactive access to MongoDB
+    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
+
 }
+
 
 tasks.named('test') {
     useJUnitPlatform()

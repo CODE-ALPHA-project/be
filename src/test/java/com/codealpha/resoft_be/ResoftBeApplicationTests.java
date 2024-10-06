@@ -2,10 +2,11 @@ package com.codealpha.resoft_be;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
-class ResoftBeApplicationTests {
-
+@ActiveProfiles("local")
+public class ResoftBeApplicationTests {
     @Test
     void contextLoads() {
     }

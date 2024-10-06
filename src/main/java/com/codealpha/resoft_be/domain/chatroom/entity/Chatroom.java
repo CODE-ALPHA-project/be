@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity(name = "Chatrooms")
+@Entity(name = "chatrooms")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -30,8 +30,4 @@ public class Chatroom {
 
     @OneToOne
     UserChatroom userChatroom = null;
-
-    @OneToMany
-    @Builder.Default
-    List<Message> messages = new ArrayList<>();
 }

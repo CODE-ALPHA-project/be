@@ -32,8 +32,5 @@ jobs:
           echo "${{ secrets.APPLICATION_YML }}" > ./src/main/resources/application.yml
           echo "${{ secrets.APPLICATION_LOCAL_YML }}" > ./src/main/resources/application-local.yml
 
-      - name: Build with Gradle
-        run: ./gradlew build
-
       - name: Test with Gradle
         run: ./gradlew test

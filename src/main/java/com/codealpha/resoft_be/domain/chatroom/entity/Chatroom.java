@@ -1,33 +1,41 @@
 package com.codealpha.resoft_be.domain.chatroom.entity;
 
-import com.codealpha.resoft_be.domain.message.entity.Message;
-import com.codealpha.resoft_be.domain.userchatroom.entity.UserChatroom;
+import com.codealpha.resoft_be.common.entity.BaseEntity;
+import com.codealpha.resoft_be.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Entity(name = "chatrooms")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Chatroom {
+public class Chatroom extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
     @Column()
     String name;
-    //enum
-    @Column()
-    String type;
-    //enum
-    @Column()
-    String status;
 
-    @OneToOne
-    UserChatroom userChatroom = null;
+    @Column()
+    @Enumerated(EnumType.STRING)
+    ChatroomType type;
+
+    @Column()
+    @Enumerated(EnumType.STRING)
+    ChatroomStatus status;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    User user;
+
+//    public static Chatroom create(){
+//        return Chatroom.builder()
+//                .name()
+//                .type()
+//                .status()
+//                .build();
+//    }
 }

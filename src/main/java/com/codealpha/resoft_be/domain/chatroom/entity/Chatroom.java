@@ -28,14 +28,19 @@ public class Chatroom extends BaseEntity {
     ChatroomStatus status;
 
     @ManyToOne
+    @Builder.Default
     @JoinColumn(name = "user_id")
-    User user;
+    User participant = null;
 
-//    public static Chatroom create(){
-//        return Chatroom.builder()
-//                .name()
-//                .type()
-//                .status()
-//                .build();
-//    }
+    public static Chatroom create(String name, String type, String status){
+        return Chatroom.builder()
+                .name(name)
+                .type(ChatroomType.valueOf(type))
+                .status(ChatroomStatus.valueOf(status))
+                .build();
+    }
+    public void addParticipant(User participant){
+        participant.addChatroomList(this);
+        this.participant = participant;
+    }
 }

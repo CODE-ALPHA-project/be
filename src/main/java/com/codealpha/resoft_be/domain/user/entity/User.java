@@ -1,9 +1,11 @@
 package com.codealpha.resoft_be.domain.user.entity;
 
-import com.codealpha.resoft_be.domain.userchatroom.entity.UserChatroom;
+import com.codealpha.resoft_be.common.entity.BaseEntityWithUpdate;
+import com.codealpha.resoft_be.domain.chatroom.entity.Chatroom;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
@@ -11,9 +13,10 @@ import java.util.List;
 
 @Entity(name="users")
 @Builder
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class User extends BaseEntityWithUpdate {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
@@ -27,7 +30,18 @@ public class User {
     @Column()
     String password;
 
-    @OneToMany
+    @OneToMany(mappedBy = "participant")
     @Builder.Default
-    List<UserChatroom> userChatroomList = new ArrayList<>();
+    List<Chatroom> chatroomList = new ArrayList<>();
+
+    public void addChatroomList(Chatroom chatroom){
+        chatroomList.add(chatroom);
+    }
+    public static User create(String name, String email, String password){
+        return User.builder()
+                .name(name)
+                .email(email)
+                .password(password)
+                .build();
+    }
 }

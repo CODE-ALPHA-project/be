@@ -28,7 +28,7 @@ public class User extends BaseEntityWithUpdate {
     @Column()
     String password;
 
-    @OneToMany
+    @OneToMany(mappedBy = "participant")
     @Builder.Default
     List<Chatroom> chatroomList = new ArrayList<>();
 

@@ -1,16 +1,19 @@
 package com.codealpha.resoft_be.domain.user;
 
+import com.codealpha.resoft_be.common.config.JpaAuditingConfig;
 import com.codealpha.resoft_be.domain.user.entity.User;
 import com.codealpha.resoft_be.domain.user.repository.UserRepository;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @DataJpaTest
 @ActiveProfiles("local")
+@Import(JpaAuditingConfig.class)
 @ExtendWith(SpringExtension.class)
 public class UserRepositoryTest {
 

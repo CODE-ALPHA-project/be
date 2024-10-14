@@ -61,8 +61,10 @@ dependencies {
     implementation 'io.projectreactor:reactor-core'
     testImplementation 'io.projectreactor:reactor-test'
 
-    //Websocket
+    // Kafka
+    implementation 'io.projectreactor.kafka:reactor-kafka'
 
+    //Websocket
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
 }
 

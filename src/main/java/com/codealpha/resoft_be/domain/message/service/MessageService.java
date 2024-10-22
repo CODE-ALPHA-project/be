@@ -6,6 +6,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface MessageService {
-    Mono<Message> saveMessage(Request.Send sendCmd);
+    Mono<Message> sendMessage(Request.Send sendCmd);
     Flux<Message> getAllMessages(Long chatRoomId);
 }

@@ -11,7 +11,7 @@ import java.util.Map;
 public class MessageStrategyFactory {
 
     private final MessageStrategyMap strategyMap;
-    public MessageStrategy createMessageStrategy(MessageStrategyType type){
-        return strategyMap.getStrategy(type);
+    public MessageStrategy createMessageStrategy(String type){
+        return strategyMap.getStrategy(MessageStrategyType.valueOf(type));
     }
 }

@@ -1,68 +1,90 @@
 package com.codealpha.resoft_be.domain.message.service;
 
-import com.codealpha.resoft_be.domain.message.dto.AnswerResponse;
+import com.codealpha.resoft_be.domain.message.dto.AnswerResponseDTO;
+import com.codealpha.resoft_be.domain.message.dto.LawReferenceDTO;
 import com.codealpha.resoft_be.domain.message.dto.Request;
 import com.codealpha.resoft_be.domain.message.entity.Message;
+import com.codealpha.resoft_be.domain.message.entity.LawReference;
 import com.codealpha.resoft_be.domain.message.repository.MessageRepository;
 import com.codealpha.resoft_be.domain.message.service.factory.MessageStrategyFactory;
 import com.codealpha.resoft_be.domain.message.service.strategy.MessageStrategy;
-import com.codealpha.resoft_be.domain.message.service.strategy.MessageStrategyType;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.kafka.receiver.KafkaReceiver;
-import reactor.kafka.receiver.ReceiverRecord;
+
+import java.util.List;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class MessageServiceImpl implements MessageService {
-    private final MessageStrategyFactory messageFactory;
     private final MessageRepository messageRepository;
+    private final MessageStrategyFactory messageFactory;
     private final SimpMessagingTemplate messagingTemplate;
     private final ObjectMapper objectMapper = new ObjectMapper();
-
     @Override
     public Mono<Message> sendMessage(Request.Send sendCmd) {
-        Message message = Message.createOnlyMessage(sendCmd.getChatRoomId(), sendCmd.getMessage());
+        Message message = Message.createHumanMessage(sendCmd.getUserId(), sendCmd.getChatRoomId(), sendCmd.getMessage());
 
         return messageRepository.save(message)
                 .doOnSuccess(savedMessage -> log.info("Message saved successfully: {}", savedMessage))
                 .doOnError(error -> log.error("Error occurred while saving message: ", error))
-                .flatMap(savedMessage -> {
-                    MessageStrategy messageStrategy = messageFactory.createMessageStrategy(MessageStrategyType.AI);
-                    return messageStrategy.sendMessage(sendCmd.getChatRoomId().toString(), savedMessage.getMessage())
-                            .then(Mono.just(savedMessage));  // 메시지 전송 성공 후 저장된 메시지 반환
+                .flatMap(savedMessage ->{
+                    MessageStrategy strategy = messageFactory.createMessageStrategy(sendCmd.getSentType());
+                    return strategy.sendMessage(sendCmd.getChatRoomId().toString(), savedMessage.getMessage())
+                            .then(Mono.just(savedMessage));
                 })
-                .doOnError(e -> log.error("Failed to send message: {}", e.getMessage()));
+                .doOnError(e->log.error("Failed"));
     }
+
     @Override
     public Flux<Message> getAllMessages(Long chatRoomId) {
-        log.info(messageRepository.findAll().then().toString());
+        log.info("Retrieving all messages for chat room: {}", chatRoomId);
         return messageRepository.findAllByChatRoomId(chatRoomId);
     }
 
-    @KafkaListener(topics = "ai-responses", groupId = "your_group")
-    public void receiveMessage(ConsumerRecord<String, String> record) {
-        String message = record.value();  // 메시지 본문
-        String key = record.key();  // 메시지 키
+    @KafkaListener(topics = "ai-responses", groupId = "your_group", containerFactory = "kafkaListenerContainerFactory")
+    public void receiveMessage(ConsumerRecord<String, String> record, Acknowledgment acknowledgment) {
+        String message = record.value();
+        String key = record.key();
 
-        log.error("Received Message: " + message);
-        log.error("Received Key: " + key);
+        log.info("Received Message: {}", message);
+        log.info("Received Key: {}", key);
 
         try {
-            AnswerResponse myMessage = objectMapper.readValue(message, AnswerResponse.class);
-            log.error("Decoded Answer: " + myMessage.getAnswer());
-            messagingTemplate.convertAndSend("/topic/answers/"+key, myMessage);
+            AnswerResponseDTO answerResponse = objectMapper.readValue(message, AnswerResponseDTO.class);
+            List<LawReference> lawReferences = getLawReferenceList(answerResponse.getReferences());
+
+            Message aiMessage = Message.createAIMessage(Long.valueOf(key), answerResponse.getAnswer(), lawReferences);
+
+            // Mono가 완료된 후 오프셋 커밋
+            messageRepository.save(aiMessage)
+                    .doOnSuccess(saved -> acknowledgment.acknowledge())  // 성공적으로 저장되면 커밋
+                    .doOnError(e -> log.error("Error saving to repository: {}", e.getMessage(), e))
+                    .subscribe();
+
+            log.info("Decoded Answer: {}", answerResponse.getAnswer());
+            messagingTemplate.convertAndSend("/topic/answers/" + key, answerResponse);
         } catch (Exception e) {
-            e.printStackTrace(); // 예외 처리
+            log.error("Error decoding message: {}", e.getMessage(), e);
         }
     }
+
+
+
+
+    private List<LawReference> getLawReferenceList(List<LawReferenceDTO> referenceDTOList) {
+        return referenceDTOList.stream()
+                .map(LawReference::from)
+                .toList();
+    }
 }
+
+//redis, mongo -> docker 안쓰지마 / aws 완전 배포

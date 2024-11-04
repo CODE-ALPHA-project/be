@@ -1,6 +1,6 @@
 package com.codealpha.resoft_be.domain.message.dto;
 
-import com.codealpha.resoft_be.domain.message.entity.Attachment;
+import com.codealpha.resoft_be.domain.message.service.strategy.MessageStrategyType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,8 +14,10 @@ public class Request {
     @AllArgsConstructor
     @Builder
     public static class Send{
+        private Long userId;
         private Long chatRoomId;
         private String message;
+        private String sentType;
         private List<AttachmentDTO> attachmentList;
     }
 

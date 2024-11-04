@@ -6,10 +6,8 @@ import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
-@Document(collection = "attachments")
+@Document(collection = "attachment")
 public class Attachment {
-    @Id
-    private ObjectId id;
     private String fileName;
     private String fileType;
     private String fileUrl;

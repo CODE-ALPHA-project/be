@@ -63,9 +63,15 @@ dependencies {
 
     // Kafka
     implementation 'io.projectreactor.kafka:reactor-kafka'
+    implementation 'org.springframework.kafka:spring-kafka'
 
     //Websocket
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
+    //Jackson
+
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+
 }
 
 

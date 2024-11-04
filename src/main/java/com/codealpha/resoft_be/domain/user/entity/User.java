@@ -30,6 +30,13 @@ public class User extends BaseEntityWithUpdate {
     @Column()
     String password;
 
+    /**
+     * 기본값 -> USER
+     */
+    @Enumerated(EnumType.STRING)
+    UserRole role = UserRole.MEMBER;
+
+
     @OneToMany(mappedBy = "participant")
     @Builder.Default
     List<Chatroom> chatroomList = new ArrayList<>();

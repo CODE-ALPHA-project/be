@@ -29,14 +29,23 @@ public class MessageController {
     private final MessageService messageService;
 
     @MessageMapping("/send")
-    public void send(Request.Send sendMessage) { // Change parameter type to DTO
+    public void send(Request.Send sendMessage) {
+        // 메시지를 비동기적으로 저장하고 결과에 따라 처리합니다.
+        messageService.sendMessage(sendMessage)
+                .doOnSuccess(savedMessage -> {
+                    log.info("Message saved successfully: {}", savedMessage);
+                    // 저장된 메시지에 대한 응답을 클라이언트에 보냅니다.
 
-        messageService.sendMessage(sendMessage).subscribe();
-
-        String responseMessage = "Echo: " + sendMessage.getMessage();
-        log.info(responseMessage);
-        messagingTemplate.convertAndSend("/topic/messages", responseMessage);
+                    messagingTemplate.convertAndSend("/topic/messages", savedMessage);
+                })
+                .doOnError(error -> {
+                    log.error("Error occurred while saving message: ", error);
+                    // 에러 발생 시 클라이언트에 에러 메시지를 보낼 수 있습니다.
+                    messagingTemplate.convertAndSend("/topic/messages", "Error saving message: " + error.getMessage());
+                })
+                .subscribe();
     }
+
 
     @GetMapping()
     public Flux<Message> getMessages(@RequestParam Long chatroomId){

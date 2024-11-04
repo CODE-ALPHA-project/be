@@ -4,9 +4,9 @@ import java.util.List;
 import lombok.Data;
 
 @Data
-public class AnswerResponse {
+public class AnswerResponseDTO {
     private String answer;
-    private List<LawReference> references;
+    private List<LawReferenceDTO> references;
 
     @Override
     public String toString() {

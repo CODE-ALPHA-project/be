@@ -1,0 +1,57 @@
+spring:
+  config:
+    activate:
+      on-profile: local  # 프로파일 활성화 설정
+
+  # H2 Database 설정
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE # In-Memory H2 데이터베이스 URL
+    driver-class-name: org.h2.Driver  # H2 드라이버 클래스
+    username: sa  # H2 기본 사용자 이름
+    password: password  # H2 기본 비밀번호 (기본적으로 비밀번호가 없지만 설정 가능)
+
+  # JPA 설정
+  jpa:
+    hibernate:
+      ddl-auto: update  # Hibernate가 데이터베이스 스키마를 자동으로 생성하고 업데이트
+    show-sql: true  # 실행되는 SQL 쿼리를 로그에 표시
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect  # H2 데이터베이스의 Hibernate 방언 설정
+
+  # MongoDB 설정
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/test  # MongoDB 연결 URI
+      database: test  # 사용할 MongoDB 데이터베이스 이름
+
+  # H2 콘솔 활성화 (테스트용)
+  h2:
+    console:
+      enabled: true  # H2 콘솔을 활성화
+      path: /h2-console  # H2 콘솔 접근 경로
+
+  # kafka 설정
+  kafka:
+    bootstrap-servers: 13.209.21.155:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      group-id: your_group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
+    listener:
+      ack-mode: manual
+
+  threads:
+    virtual:
+      enabled: true
+
+# Logging 설정
+logging:
+  level:
+    org.apache.kafka : off
+    root: DEBUG  # 디버깅 로그 레벨

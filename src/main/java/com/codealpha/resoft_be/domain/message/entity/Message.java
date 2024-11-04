@@ -1,41 +1,44 @@
 package com.codealpha.resoft_be.domain.message.entity;
 
-import com.codealpha.resoft_be.domain.chatroom.entity.Chatroom;
+import java.util.List;
 import lombok.*;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.List;
-
 @Document(collection = "messages")
-@Data
-@ToString
 @Builder
-@NoArgsConstructor
+@Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class Message {
-
-    @Id  // MongoDB의 고유 식별자 필드
-    private ObjectId id;  // MongoDB에서 기본적으로 String 타입의 _id를 사용하므로 변경
-
-    private String message;
-    private List<Attachment> attachmentList;
+    @Id
+    private ObjectId id;
+    private SenderType senderType;
     private Long chatRoomId;
 
-    public static Message createOnlyMessage(Long chatRoomId, String message){
+    //Human
+    private Long userId;
+    private String message;
+    private List<Attachment> attachmentList;
+
+    //ai
+    private List<LawReference> references;
+
+    public static Message createAIMessage(Long chatroomId, String answer, List<LawReference> references) {
         return Message.builder()
-                .chatRoomId(chatRoomId)
-                .message(message)
+                .chatRoomId(chatroomId)
+                .senderType(SenderType.AI)
+                .message(answer)
+                .references(references)
                 .build();
     }
-
-    public static Message createMessageAndAttachmentList(Long chatRoomId, String message, List<Attachment> attachmentList){
+    public static Message createHumanMessage(Long userId, Long chatroomId, String message) {
         return Message.builder()
-                .chatRoomId(chatRoomId)
+                .userId(userId)
+                .chatRoomId(chatroomId)
+                .senderType(SenderType.HUMAN)
                 .message(message)
-                .attachmentList(attachmentList)
                 .build();
     }
 }
